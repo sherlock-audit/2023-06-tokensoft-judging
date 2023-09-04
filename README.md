@@ -92,6 +92,10 @@ Great find! We need to preserve the ability to re-initialize distribution record
 
 Fixed: https://github.com/SoftDAO/contracts/pull/9
 
+**maarcweiss**
+
+Fixed by keeping the ability to re-initialize the distribution records, but not increasing the voting power of the user 
+
 # Issue M-1: setVoteFactor() does not change existing supply of votes. As a result, some may be unable to withdraw. 
 
 Source: https://github.com/sherlock-audit/2023-06-tokensoft-judging/issues/55 
@@ -207,6 +211,10 @@ Proposed solution:
 **cr-walker**
 
 Fixed by https://github.com/SoftDAO/contracts/pull/10
+
+**maarcweiss**
+
+Fixed by adding a function to update the voting power when claiming and initializing the distribution.
 
 # Issue M-2: Because of rounding issues, users may not be able to withdraw airdrop tokens if their claim has been adjust()'ed upwards 
 
@@ -653,6 +661,14 @@ Escalations have been resolved successfully!
 Escalation status:
 - [dot-pengun](https://github.com/sherlock-audit/2023-06-tokensoft-judging/issues/56/#issuecomment-1667060396): rejected
 
+**cr-walker**
+
+@sherlock-admin - here's the fix: https://github.com/SoftDAO/contracts/pull/11
+
+**maarcweiss**
+
+Fixed by wrapping the logic of the fix in #41 in the `_reconcileVotingPower` function and preventing rounding issues to fix that the user's were not be able to withdraw
+
 # Issue M-3: In `PriceTierVesting` there is no check if the Sequenzer for L2s is up when calling the oralce 
 
 Source: https://github.com/sherlock-audit/2023-06-tokensoft-judging/issues/64 
@@ -753,6 +769,14 @@ Escalations have been resolved successfully!
 Escalation status:
 - [BenRai1](https://github.com/sherlock-audit/2023-06-tokensoft-judging/issues/64/#issuecomment-1667745005): accepted
 
+**cr-walker**
+
+Fixed by https://github.com/SoftDAO/contracts/pull/17
+
+**maarcweiss**
+
+Fixed by creating the `L2OracleWithSequencerCheck.sol` contract, as the contract that checks whether the sequencer is up.
+
 # Issue M-4: `SafeERC20.safeApprove` reverts for changing existing approvals 
 
 Source: https://github.com/sherlock-audit/2023-06-tokensoft-judging/issues/141 
@@ -808,6 +832,10 @@ Good catch, updating the code to simply set approval to zero first and then rese
 **cr-walker**
 
 Fixed by https://github.com/SoftDAO/contracts/pull/12
+
+**maarcweiss**
+
+Fixed by approving to 0 before approving again by implementing the following line: `token.safeApprove(address(connext), 0);`
 
 # Issue M-5: CrosschainDistributor: Not paying relayer fee when calling xcall to claim tokens to other domains 
 
@@ -908,6 +936,19 @@ there is no documentation on fee-sponsoring though, and agree that we should mak
 **LayneHaber**
 
 Fixed: https://github.com/SoftDAO/contracts/pull/8
+
+**cr-walker**
+
+Closing because fix has been merged into repo.
+
+**cr-walker**
+
+Reopening - I think I'm supposed to leave this open until the fix has been reviewed!
+
+
+**maarcweiss**
+
+Fixed by sending the value directly from the `_settleClaim` function.
 
 # Issue M-6: Loss of funds during user adjusting 
 
@@ -1058,4 +1099,12 @@ Escalations have been resolved successfully!
 
 Escalation status:
 - [MAKEOUTHILL6](https://github.com/sherlock-audit/2023-06-tokensoft-judging/issues/195/#issuecomment-1670816225): accepted
+
+**cr-walker**
+
+Fixed by https://github.com/SoftDAO/contracts/pull/16
+
+**maarcweiss**
+
+Fixed by accounting for the adjustment of the user. This has been done by getting the `records[beneficiary].total` instead of the `purchasedAmount` which was used before.
 
